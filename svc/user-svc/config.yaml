@@ -1,0 +1,11 @@
+postgres:
+  host: localhost
+  port: 5432
+  username: postgres
+  password: postgres
+  db: sec_kill
+
+trace:
+  host: localhost
+  port: 9411
+  url: /api/v2/spans

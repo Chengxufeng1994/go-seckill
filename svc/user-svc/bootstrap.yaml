@@ -1,0 +1,16 @@
+environment: development
+
+http:
+  host: host.docker.internal
+  port: 9009
+
+rpc:
+  host: localhost
+  port: 9108
+
+discover:
+  host: localhost
+  port: 8500
+  serviceName: user
+  instanceId: user-svc
+  weight: 10
