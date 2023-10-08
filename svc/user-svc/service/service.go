@@ -31,13 +31,12 @@ func New(repo entity.Repository) Service {
 // Check implement Service method
 func (svc *userService) Check(ctx context.Context, username, password string) (int64, error) {
 	userDao, err := svc.repo.GetUserByUsername(username)
-	userDto := model.UserDao2Dto(userDao)
-
 	if err != nil {
 		log.Printf("Repository.GetUserByUsername, err : %v", err)
 		return 0, err
 	}
 
+	userDto := model.UserDao2Dto(userDao)
 	if !strings.EqualFold(password, userDto.Password) {
 		return 0, errors.New("password invalid")
 	}

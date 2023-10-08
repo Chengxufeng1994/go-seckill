@@ -2,7 +2,6 @@ package gorm
 
 import (
 	"github.com/Chengxufeng1994/go-seckill/svc/user-svc/entity"
-	"github.com/Chengxufeng1994/go-seckill/svc/user-svc/model"
 	"gorm.io/gorm"
 	"time"
 )
@@ -18,21 +17,21 @@ func New(db *gorm.DB) entity.Repository {
 }
 
 func (repo *repository) GetUser(id uint) (*entity.User, error) {
-	var user entity.User
+	var user *entity.User
 	result := repo.db.
-		Model(&model.User{}).
+		Model(entity.User{}).
 		Where("id = ?", id).
 		First(&user)
 	if result.Error != nil {
-		return &user, result.Error
+		return nil, result.Error
 	}
 
-	return &user, nil
+	return user, nil
 }
 
 func (repo *repository) GetUsers() ([]*entity.User, error) {
 	var dat []*entity.User
-	err := repo.db.Model(&model.User{}).Find(&dat).Error
+	err := repo.db.Model(&entity.User{}).Find(&dat).Error
 	if err != nil {
 		return nil, err
 	}
@@ -46,21 +45,21 @@ func (repo *repository) GetUsers() ([]*entity.User, error) {
 }
 
 func (repo *repository) GetUserByUsername(username string) (*entity.User, error) {
-	var user entity.User
+	var user *entity.User
 	result := repo.db.
-		Model(&model.User{}).
+		Model(&entity.User{}).
 		Where("username = ?", username).
 		First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
-	return &user, nil
+	return user, nil
 }
 
 func (repo *repository) CreateUser(user *entity.User) (uint, error) {
 	user.CreatedAt = time.Now()
-	result := repo.db.Model(&model.User{}).Create(&user)
+	result := repo.db.Model(&entity.User{}).Create(&user)
 	if result.Error != nil {
 		return 0, result.Error
 	}
