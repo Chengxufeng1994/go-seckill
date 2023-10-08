@@ -21,7 +21,6 @@ func init() {
 }
 
 func initBootstrapConfig() error {
-
 	viper.AddConfigPath("./")
 	viper.SetConfigName("bootstrap")
 	viper.SetConfigType("yaml")

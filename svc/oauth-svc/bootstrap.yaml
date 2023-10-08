@@ -1,0 +1,16 @@
+environment: development
+
+http:
+  host: host.docker.internal
+  port: 9019
+
+rpc:
+  host: localhost
+  port: 9018
+
+discover:
+  host: localhost
+  port: 8500
+  serviceName: oauth
+  instanceId: oauth-svc
+  weight: 10
