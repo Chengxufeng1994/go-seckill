@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/Chengxufeng1994/go-seckill/pb"
 	"github.com/Chengxufeng1994/go-seckill/pkg/bootstrap"
 	"github.com/Chengxufeng1994/go-seckill/pkg/discover"
 	"github.com/Chengxufeng1994/go-seckill/svc/oauth-svc/config"
@@ -18,6 +19,7 @@ import (
 	kitzipkin "github.com/go-kit/kit/tracing/zipkin"
 	"github.com/openzipkin/zipkin-go"
 	"github.com/openzipkin/zipkin-go/propagation/b3"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net"
 	"net/http"
@@ -88,13 +90,17 @@ func main() {
 	checkTokenEndpoint = endpoint.MakeClientAuthorizationMiddleware(config.Logger)(checkTokenEndpoint)
 	checkTokenEndpoint = kitzipkin.TraceEndpoint(config.ZipkinTracer, "check-endpoint")(checkTokenEndpoint)
 
+	gRPCCheckTokenEndpoint := endpoint.MakeCheckTokenEndpoint(tokenService)
+	gRPCCheckTokenEndpoint = kitzipkin.TraceEndpoint(config.ZipkinTracer, "grpc-check-endpoint")(gRPCCheckTokenEndpoint)
+
 	healthCheckEndpoint := endpoint.MakeHealthCheckEndpoint(commonService)
 	healthCheckEndpoint = kitzipkin.TraceEndpoint(config.ZipkinTracer, "health-endpoint")(healthCheckEndpoint)
 
 	endpts := endpoint.OAuth2Endpoints{
-		TokenEndpoint:       tokenEndpoint,
-		CheckTokenEndpoint:  checkTokenEndpoint,
-		HealthCheckEndpoint: healthCheckEndpoint,
+		TokenEndpoint:          tokenEndpoint,
+		CheckTokenEndpoint:     checkTokenEndpoint,
+		GrpcCheckTokenEndpoint: gRPCCheckTokenEndpoint,
+		HealthCheckEndpoint:    healthCheckEndpoint,
 	}
 
 	discover.Register()
@@ -123,7 +129,7 @@ func runHttpSrv(ctx context.Context, endpts endpoint.OAuth2Endpoints, clientDeta
 
 func runGrpcSrv(ctx context.Context, endpts endpoint.OAuth2Endpoints, tracer *zipkin.Tracer, errChan chan error) {
 	config.Logger.Log("info", "gRPC server start at port:"+strconv.Itoa(*grpcPort))
-	//serverTracer := kitzipkin.GRPCServerTrace(tracer, kitzipkin.Name("grpc-transport"))
+	serverTracer := kitzipkin.GRPCServerTrace(tracer, kitzipkin.Name("grpc-transport"))
 	tr := tracer
 	md := metadata.MD{}
 	parentSpan := tr.StartSpan("test")
@@ -131,9 +137,14 @@ func runGrpcSrv(ctx context.Context, endpts endpoint.OAuth2Endpoints, tracer *zi
 	b3.InjectGRPC(&md)(parentSpan.Context())
 
 	grpcAddr := fmt.Sprintf(":%d", *grpcPort)
-	_, err := net.Listen("tcp", grpcAddr)
+	lis, err := net.Listen("tcp", grpcAddr)
 	if err != nil {
 		errChan <- err
 		return
 	}
+
+	handler := transport.NewGrpcServer(ctx, endpts, serverTracer)
+	grpcSrv := grpc.NewServer()
+	pb.RegisterOAuthServiceServer(grpcSrv, handler)
+	errChan <- grpcSrv.Serve(lis)
 }

@@ -19,7 +19,6 @@ func MakeClientAuthorizationMiddleware(logger log.Logger) endpoint.Middleware {
 			if _, ok := ctx.Value(OAuth2ClientDetailsKey).(*model.ClientDetails); !ok {
 				return nil, ErrInvalidClientRequest
 			}
-
 			return next(ctx, request)
 		}
 	}
@@ -75,9 +74,10 @@ var (
 )
 
 type OAuth2Endpoints struct {
-	TokenEndpoint       endpoint.Endpoint
-	CheckTokenEndpoint  endpoint.Endpoint
-	HealthCheckEndpoint endpoint.Endpoint
+	TokenEndpoint          endpoint.Endpoint
+	CheckTokenEndpoint     endpoint.Endpoint
+	GrpcCheckTokenEndpoint endpoint.Endpoint
+	HealthCheckEndpoint    endpoint.Endpoint
 }
 
 type TokenRequest struct {
