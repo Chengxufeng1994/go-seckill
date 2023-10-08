@@ -1,12 +1,12 @@
 environment: development
 
 http:
-  host: host.docker.internal
+  host: 192.168.100.13
   port: 9009
 
 rpc:
   host: localhost
-  port: 9108
+  port: 9008
 
 discover:
   host: localhost

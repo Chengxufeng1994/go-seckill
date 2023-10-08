@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/Chengxufeng1994/go-seckill/pkg/bootstrap"
 	pkgconfig "github.com/Chengxufeng1994/go-seckill/pkg/config"
-	"github.com/Chengxufeng1994/go-seckill/svc/user-svc/model"
+	"github.com/Chengxufeng1994/go-seckill/svc/user-svc/entity"
 	"github.com/go-kit/kit/log"
 	"github.com/openzipkin/zipkin-go"
 	zipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
@@ -97,7 +97,7 @@ func initDB(dsn string) error {
 
 func initMigrate() error {
 	var err error
-	err = Db.Table("users").AutoMigrate(&model.User{})
+	err = Db.Table("users").AutoMigrate(&entity.User{})
 	if err != nil {
 		return err
 	}

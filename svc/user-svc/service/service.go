@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/Chengxufeng1994/go-seckill/svc/user-svc/entity"
+	"github.com/Chengxufeng1994/go-seckill/svc/user-svc/model"
 	"log"
 	"strings"
 )
@@ -29,17 +30,19 @@ func New(repo entity.Repository) Service {
 
 // Check implement Service method
 func (svc *userService) Check(ctx context.Context, username, password string) (int64, error) {
-	user, err := svc.repo.GetUserByUsername(username)
+	userDao, err := svc.repo.GetUserByUsername(username)
+	userDto := model.UserDao2Dto(userDao)
+
 	if err != nil {
 		log.Printf("Repository.GetUserByUsername, err : %v", err)
 		return 0, err
 	}
 
-	if !strings.EqualFold(password, user.Password) {
+	if !strings.EqualFold(password, userDto.Password) {
 		return 0, errors.New("password invalid")
 	}
 
-	return int64(user.ID), nil
+	return int64(userDto.ID), nil
 }
 
 // HealthCheck implement Service method
