@@ -26,7 +26,7 @@ type UserRequest struct {
 type UserResponse struct {
 	Result bool   `json:"result"`
 	UserId int64  `json:"user_id"`
-	Error  string `json:"error"`
+	Error  string `json:"svc_err"`
 }
 
 // MakeUserEndpoints

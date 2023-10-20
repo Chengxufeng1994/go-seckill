@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"github.com/Chengxufeng1994/go-seckill/pkg/bootstrap"
 	pkgconfig "github.com/Chengxufeng1994/go-seckill/pkg/config"
+	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/model"
 	"github.com/go-kit/kit/log"
 	"github.com/openzipkin/zipkin-go"
 	zipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
 	"gorm.io/gorm"
 	"os"
 	"strconv"
+	"sync"
 )
 
 var (
@@ -63,3 +65,26 @@ func initializeZipkin(zipkinUrl string) error {
 	}
 	return nil
 }
+
+var SkAppContext = &SkAppCtx{
+	UserConnMap: make(map[string]chan *model.SecResult, 1024),
+	SecReqChan:  make(chan *model.SecRequest, 1024),
+}
+
+type SkAppCtx struct {
+	SecReqChan       chan *model.SecRequest
+	SecReqChanSize   int
+	RWSecProductLock sync.RWMutex
+
+	UserConnMap     map[string]chan *model.SecResult
+	UserConnMapLock sync.Mutex
+}
+
+const (
+	// ProductStatusNormal 商品狀態正常
+	ProductStatusNormal = 0
+	// ProductStatusSaleOut 商品狀態賣光
+	ProductStatusSaleOut = 1
+	// ProductStatusForceSaleOut 商品強制賣光
+	ProductStatusForceSaleOut = 2
+)

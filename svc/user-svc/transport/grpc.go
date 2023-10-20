@@ -45,7 +45,7 @@ func EncodeGRPCUserResponse(_ context.Context, response any) (any, error) {
 		return &pb.UserResponse{
 			Result: bool(resp.Result),
 			UserId: resp.UserId,
-			Err:    "error",
+			Err:    "svc_err",
 		}, nil
 	}
 
