@@ -64,7 +64,20 @@ type SecKill struct {
 	AppWriteToHandleGoroutineNum int `mapstructure:"AppWriteToHandleGoroutineNum"`
 	AppReadToHandleGoroutineNum  int `mapstructure:"AppReadToHandleGoroutineNum"`
 
+	CoreReadRedisGoroutineNum  int `mapstructure:"CoreReadRedisGoroutineNum"`
+	CoreWriteRedisGoroutineNum int `mapstructure:"CoreWriteRedisGoroutineNum"`
+	CoreHandleGoroutineNum     int `mapstructure:"CoreHandleGoroutineNum"`
+
 	AppWaitResultTimeout int `mapstructure:"AppWaitResultTimeout"`
+
+	CoreWaitResultTimeout int `mapstructure:"CoreWaitResultTimeout"`
+
+	MaxRequestWaitTimeout int `mapstructure:"MaxRequestWaitTimeout"`
+
+	SendToWriteChanTimeout  int `mapstructure:"SendToWriteChanTimeout"`
+	SendToHandleChanTimeout int `mapstructure:"SendToHandleChanTimeout"`
+
+	TokenPassWd string `mapstructure:"TokenPassWd"`
 }
 
 // SecProductInfoConf 商品資訊配置

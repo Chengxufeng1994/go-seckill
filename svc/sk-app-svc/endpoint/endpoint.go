@@ -20,7 +20,7 @@ type SecInfoRequest struct {
 
 type Response struct {
 	Result map[string]interface{} `json:"result"`
-	Error  error                  `json:"svc_err"`
+	Error  error                  `json:"error"`
 	Code   int                    `json:"code"`
 }
 
