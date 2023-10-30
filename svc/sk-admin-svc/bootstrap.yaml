@@ -1,0 +1,16 @@
+environment: development
+
+http:
+  host: 192.168.100.8
+  port: 9029
+
+rpc:
+  host: localhost
+  port: 9028
+
+discover:
+  host: localhost
+  port: 8500
+  serviceName: sk-admin
+  instanceId: sk-admin-svc
+  weight: 10

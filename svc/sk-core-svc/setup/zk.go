@@ -3,11 +3,12 @@ package setup
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"time"
+
 	conf "github.com/Chengxufeng1994/go-seckill/pkg/config"
 	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/config"
 	"github.com/go-zookeeper/zk"
-	"log"
-	"time"
 )
 
 func InitializeZk() error {

@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+
 	conf "github.com/Chengxufeng1994/go-seckill/pkg/config"
 	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/config"
 	"github.com/redis/go-redis/v9"
@@ -29,20 +31,20 @@ func (dist *RedisDistributor) WriteHandle() {
 		config.Logger.Log("info", "write data to redis")
 
 		req := <-config.SkAppContext.SecReqChan
-		config.Logger.Log("info", fmt.Sprintf("access time: %v", req.AccessTime))
+		log.Printf(fmt.Sprintf("access time: %v", req.AccessTime))
 		data, err := json.Marshal(req)
 		if err != nil {
-			config.Logger.Log("svc_err", fmt.Sprintf("json.Marashal req failed. svc_err: %v, req: %v", err, req))
+			log.Printf("json.Marashal req failed. svc_err: %v, req: %v", err, req)
 			continue
 		}
 
 		err = dist.client.LPush(context.Background(), conf.Conf.Redis.Proxy2layerQueueName, string(data)).Err()
 		if err != nil {
-			config.Logger.Log("svc_err", fmt.Sprintf("json.Marashal req failed. svc_err: %v, req: %v", err, req))
+			log.Printf("dist lpush req failed. svc_err: %v, req: %v", err, req)
 			continue
 		}
 
-		config.Logger.Log("info", "lpush req success. req: %v", string(data))
+		log.Printf("lpush req success. req: %v", string(data))
 	}
 }
 

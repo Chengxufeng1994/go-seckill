@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	conf "github.com/Chengxufeng1994/go-seckill/pkg/config"
 	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/config"
 	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/model"
 	"github.com/redis/go-redis/v9"
-	"time"
 )
 
 type Processor interface {

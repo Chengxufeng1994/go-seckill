@@ -1,0 +1,40 @@
+postgres:
+  host: localhost
+  port: 5432
+  username: postgres
+  password: postgres
+  db: postgres
+
+trace:
+  host: localhost
+  port: 9411
+  url: /api/v2/spans
+
+zookeeper:
+  host: localhost
+  port: 2181
+
+redis:
+  host: localhost
+  port: 6379
+  password:
+  db: 0
+  Proxy2layerQueueName: proxy2layer
+  Layer2proxyQueueName: Layer2proxy
+  IdBlackListHash: IdBlackListHash
+  IpBlackListHash: IpBlackListHash
+  IdBlackListQueue: IdBlackListQueue
+  IpBlackListQueue: IpBlackListQueue
+
+seckill:
+  AppReadToHandleGoroutineNum: 10
+  AppWriteToHandleGoroutineNum: 10
+  CoreReadRedisGoroutineNum: 10
+  CoreWriteRedisGoroutineNum: 10
+  CoreHandleGoroutineNum: 20
+  AppWaitResultTimeout: 500
+  CoreWaitResultTimeout: 500
+  MaxRequestWaitTimeout: 500
+  SendToWriteChanTimeout: 500
+  SendToHandleChanTimeout: 500
+  TokenPassWd: go

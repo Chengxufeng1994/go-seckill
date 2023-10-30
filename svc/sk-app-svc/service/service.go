@@ -2,13 +2,14 @@ package service
 
 import (
 	"fmt"
+	"log"
+	"math/rand"
+	"time"
+
 	conf "github.com/Chengxufeng1994/go-seckill/pkg/config"
 	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/config"
 	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/model"
 	"github.com/Chengxufeng1994/go-seckill/svc/sk-app-svc/service/svc_err"
-	"log"
-	"math/rand"
-	"time"
 )
 
 // Service Define a service interface

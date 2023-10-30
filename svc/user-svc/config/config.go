@@ -45,12 +45,13 @@ func init() {
 		os.Exit(1)
 	}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Taipei",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable search_path=%s  TimeZone=Asia/Taipei",
 		pkgconfig.Conf.Postgres.Host,
 		pkgconfig.Conf.Postgres.Username,
 		pkgconfig.Conf.Postgres.Password,
 		pkgconfig.Conf.Postgres.Db,
-		pkgconfig.Conf.Postgres.Port)
+		pkgconfig.Conf.Postgres.Port,
+		"sec_kill")
 	Logger.Log("dsn", dsn)
 	if err := initDB(dsn); err != nil {
 		Logger.Log("err", "failed to connect database", "reason", err)
