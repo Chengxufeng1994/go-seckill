@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	conf "github.com/Chengxufeng1994/go-seckill/pkg/config"
@@ -42,18 +43,18 @@ func (proc *RedisProcessor) ReadHandle() {
 		}
 
 		userKey := fmt.Sprintf("%d_%d", result.UserId, result.ProductId)
-		fmt.Println("userKey : ", userKey)
+		fmt.Println(userKey)
 		config.SkAppContext.UserConnMapLock.Lock()
 		resultChan, ok := config.SkAppContext.UserConnMap[userKey]
 		config.SkAppContext.UserConnMapLock.Unlock()
 		if !ok {
-			config.Logger.Log("svc_err", fmt.Sprintf("user not found: %v", userKey))
+			log.Printf("user not found: %v\n", userKey)
 			continue
 		}
-		config.Logger.Log("info", "request result send to chan")
+		log.Printf("request result send to chan\n")
 
 		resultChan <- result
-		config.Logger.Log("info", "request result send to chan success, userKey"+userKey)
+		log.Printf("request result send to chan success, userKey:%v\n", userKey)
 	}
 }
 

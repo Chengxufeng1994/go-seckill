@@ -109,7 +109,7 @@ func SecInfoById(productId int) (map[string]interface{}, int, error) {
 
 	curRate := rand.Float64()
 	/**
-	 * 放大于购买比率的1.5倍的请求进入core层
+	* 放大于购买比率的1.5倍的请求进入core层
 	 */
 	if curRate > v.BuyRate*1.5 {
 		start = false
@@ -134,15 +134,15 @@ func (svc *SkAppService) SecKill(req *model.SecRequest) (map[string]interface{},
 	// TODO: svc_limit
 
 	userKey := fmt.Sprintf("%d_%d", req.UserId, req.ProductId)
-	ResultChan := make(chan *model.SecResult, 1)
+	resultChan := make(chan *model.SecResult, 1)
 	config.SkAppContext.UserConnMapLock.Lock()
-	config.SkAppContext.UserConnMap[userKey] = ResultChan
+	config.SkAppContext.UserConnMap[userKey] = resultChan
 	config.SkAppContext.UserConnMapLock.Unlock()
 
 	// 將請求送入通道並且推入到 redis queue 中
 	config.SkAppContext.SecReqChan <- req
 
-	ticker := time.NewTicker(time.Millisecond + time.Duration(conf.Conf.SecKill.AppWaitResultTimeout))
+	ticker := time.NewTicker(time.Second + time.Duration(conf.Conf.SecKill.AppWaitResultTimeout))
 	defer func() {
 		ticker.Stop()
 		config.SkAppContext.UserConnMapLock.Lock()
@@ -165,7 +165,7 @@ func (svc *SkAppService) SecKill(req *model.SecRequest) (map[string]interface{},
 		code = svc_err.ErrClientClosed
 		err = fmt.Errorf("client already closed")
 		return nil, code, err
-	case ret := <-ResultChan:
+	case ret := <-resultChan:
 		code = ret.Code
 		if code != 1002 {
 			return data, code, svc_err.GetErrMsg(code)
